@@ -26,6 +26,9 @@ class Avis
     #[ORM\Column]
     private ?\DateTimeImmutable $date_creat = null;
 
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Lieu $fk_lieu = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Avis
     public function setDateCreat(\DateTimeImmutable $date_creat): static
     {
         $this->date_creat = $date_creat;
+
+        return $this;
+    }
+
+    public function getFkLieu(): ?Lieu
+    {
+        return $this->fk_lieu;
+    }
+
+    public function setFkLieu(?Lieu $fk_lieu): static
+    {
+        $this->fk_lieu = $fk_lieu;
 
         return $this;
     }

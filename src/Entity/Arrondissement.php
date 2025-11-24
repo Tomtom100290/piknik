@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArrondissementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArrondissementRepository::class)]
@@ -18,6 +20,17 @@ class Arrondissement
 
     #[ORM\Column(length: 50)]
     private ?string $localite = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'fk_arrondissement')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +57,36 @@ class Arrondissement
     public function setLocalite(string $localite): static
     {
         $this->localite = $localite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setFkArrondissement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getFkArrondissement() === $this) {
+                $user->setFkArrondissement(null);
+            }
+        }
 
         return $this;
     }

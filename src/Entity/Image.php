@@ -19,6 +19,9 @@ class Image
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $attr_alt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    private ?Lieu $lieu_fk = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Image
     public function setAttrAlt(?string $attr_alt): static
     {
         $this->attr_alt = $attr_alt;
+
+        return $this;
+    }
+
+    public function getLieuFk(): ?Lieu
+    {
+        return $this->lieu_fk;
+    }
+
+    public function setLieuFk(?Lieu $lieu_fk): static
+    {
+        $this->lieu_fk = $lieu_fk;
 
         return $this;
     }
