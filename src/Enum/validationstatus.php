@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-enum validationstatus: string
+enum validationStatus: string
 {
     case EN_ATTENTE = 'En attente';
     case VALIDE = 'Validé';

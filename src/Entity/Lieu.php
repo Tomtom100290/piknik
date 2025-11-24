@@ -70,7 +70,7 @@ class Lieu
         $this->etat = $etat;
         return $this;
     }
-    
+
     public function isStatut(): ?bool
     {
         return $this->statut;
