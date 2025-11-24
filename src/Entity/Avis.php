@@ -29,6 +29,9 @@ class Avis
     #[ORM\ManyToOne(inversedBy: 'avis')]
     private ?Lieu $fk_lieu = null;
 
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?User $fk_user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Avis
     public function setFkLieu(?Lieu $fk_lieu): static
     {
         $this->fk_lieu = $fk_lieu;
+
+        return $this;
+    }
+
+    public function getFkUser(): ?User
+    {
+        return $this->fk_user;
+    }
+
+    public function setFkUser(?User $fk_user): static
+    {
+        $this->fk_user = $fk_user;
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+
+use App\Enum\VisualisationStatus;
 use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +22,10 @@ class Categorie
 
     #[ORM\Column]
     private ?\DateTimeImmutable $date_creat = null;
+
+    /*Satut d'une catégorie */
+    #[ORM\Column(enumType: VisualisationStatus::class)]
+    private ?VisualisationStatus $statusVisu = null;
 
     /**
      * @var Collection<int, Lieu>
@@ -58,6 +64,17 @@ class Categorie
     {
         $this->date_creat = $date_creat;
 
+        return $this;
+    }
+    /*ENUM pour la visualisation d'une catégorie ou pas */
+    public function getStatusVisu(): VisualisationStatus
+    {
+        return $this->statusVisu;
+    }
+
+    public function setStatusVisu(VisualisationStatus $statusVisu): self
+    {
+        $this->statusVisu = $statusVisu;
         return $this;
     }
 

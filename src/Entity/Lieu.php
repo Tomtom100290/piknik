@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\ValidationStatus;
+use App\Enum\ValorisationEquipement;
 use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,9 +30,13 @@ class Lieu
     
     private ?\DateTimeImmutable $date_creat = null;
 
-    /*VAlidation */
+    /*Validation */
     #[ORM\Column(enumType: ValidationStatus::class)]
     private ValidationStatus $etat = ValidationStatus::EN_ATTENTE;
+
+    /*Valorisation des équipement */
+    #[ORM\Column(enumType: ValorisationEquipement::class)]
+    private ?ValorisationEquipement $valo = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
     private ?Categorie $categorie_fk = null;
@@ -101,6 +106,18 @@ class Lieu
     public function setEtat(ValidationStatus $etat): self
     {
         $this->etat = $etat;
+        return $this;
+    }
+
+    /*ENUM pour la valorisation des équipements */
+    public function getValoEquip(): ValorisationEquipement
+    {
+        return $this->valo;
+    }
+
+    public function setValoEquip(ValorisationEquipement $valo): self
+    {
+        $this->valo = $valo;
         return $this;
     }
 
