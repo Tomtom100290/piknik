@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Arrondissement index{% endblock %}
+
+{% block body %}
+    <h1>Arrondissement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code_postal</th>
+                <th>Localite</th>
+                <th>actions</th>
+                <th>Code Commune </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for arrondissement in arrondissements %}
+            <tr>
+                <td>{{ arrondissement.id }}</td>
+                <td>{{ arrondissement.codePostal }}</td>
+                <td>{{ arrondissement.localite }}</td>
+                <td>
+                    <a href="{{ path('app_arrondissement_show', {'id': arrondissement.id}) }}">show</a>
+                    <a href="{{ path('app_arrondissement_edit', {'id': arrondissement.id}) }}">edit</a>
+                </td>
+                <td>{{ arrondissement.fkCommune }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_arrondissement_new') }}">Create new</a>
+{% endblock %}

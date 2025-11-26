@@ -8,6 +8,8 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
 class Lieu
@@ -16,6 +18,14 @@ class Lieu
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    // Ce champ stockera le NOM DE FICHIER dans la base
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
+
+    // Ce champ n'est PAS en base : il sert juste au formulaire
+    #[Vich\UploadableField(mapping: "product_image", fileNameProperty: "imageName")]
+    private ?File $imageFile = null;
 
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
@@ -36,7 +46,7 @@ class Lieu
 
     /*Valorisation des équipement */
     #[ORM\Column(enumType: ValorisationEquipement::class)]
-    private ?ValorisationEquipement $valo = null;
+    private ValorisationEquipement $valo = ValorisationEquipement::INTERET_BON; 
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
     private ?Categorie $categorie_fk = null;
@@ -47,9 +57,10 @@ class Lieu
     /**
      * @var Collection<int, Image>
      */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'lieu_fk')]
+    //#[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'lieu_fk')]
+    //private Collection $images;
+    #[ORM\OneToMany(mappedBy: 'lieu_fk', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
-
     /**
      * @var Collection<int, Avis>
      */
@@ -67,13 +78,18 @@ class Lieu
         $this->images = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->favoris = new ArrayCollection();
+        // La date s’auto-génère dès la création de l’objet
+        $this->date_creat = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-
+     public function __toString(): string
+    {
+        return $this->nom ?? '';
+    }
     public function getNom(): ?string
     {
         return $this->nom;
@@ -110,12 +126,12 @@ class Lieu
     }
 
     /*ENUM pour la valorisation des équipements */
-    public function getValoEquip(): ValorisationEquipement
+    public function getValo(): ValorisationEquipement
     {
         return $this->valo;
     }
 
-    public function setValoEquip(ValorisationEquipement $valo): self
+    public function setValo(ValorisationEquipement $valo): self
     {
         $this->valo = $valo;
         return $this;

@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: ImageRepository::class)]
+#[ORM\Entity]
+#[Vich\Uploadable]
 class Image
 {
     #[ORM\Id]
@@ -13,11 +15,14 @@ class Image
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $url = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageName = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $attr_alt = null;
+    #[Vich\UploadableField(mapping: 'lieu_images', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?Lieu $lieu_fk = null;
@@ -27,28 +32,39 @@ class Image
         return $this->id;
     }
 
-    public function getUrl(): ?string
+    public function setImageFile(?File $imageFile = null): void
     {
-        return $this->url;
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // Déclenche la mise à jour Doctrine
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
-    public function setUrl(string $url): static
+    public function getImageFile(): ?File
     {
-        $this->url = $url;
-
-        return $this;
+        return $this->imageFile;
     }
 
-    public function getAttrAlt(): ?string
+    public function setImageName(?string $imageName): void
     {
-        return $this->attr_alt;
+        $this->imageName = $imageName;
     }
 
-    public function setAttrAlt(?string $attr_alt): static
+    public function getImageName(): ?string
     {
-        $this->attr_alt = $attr_alt;
+        return $this->imageName;
+    }
 
-        return $this;
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 
     public function getLieuFk(): ?Lieu
@@ -56,10 +72,8 @@ class Image
         return $this->lieu_fk;
     }
 
-    public function setLieuFk(?Lieu $lieu_fk): static
+    public function setLieuFk(?Lieu $lieu_fk): void
     {
         $this->lieu_fk = $lieu_fk;
-
-        return $this;
     }
 }

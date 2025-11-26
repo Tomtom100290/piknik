@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Arrondissement{% endblock %}
+
+{% block body %}
+    <h1>Arrondissement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ arrondissement.id }}</td>
+            </tr>
+            <tr>
+                <th>Code_postal</th>
+                <td>{{ arrondissement.codePostal }}</td>
+            </tr>
+            <tr>
+                <th>Localite</th>
+                <td>{{ arrondissement.localite }}</td>
+            </tr>
+            <tr>
+                <th>Localite</th>
+                <td>{{ arrondissement.fk_commune }}</td>
+            </tr>  
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_arrondissement_index') }}">back to list</a>
+
+    <a href="{{ path('app_arrondissement_edit', {'id': arrondissement.id}) }}">edit</a>
+
+    {{ include('arrondissement/_delete_form.html.twig') }}
+{% endblock %}

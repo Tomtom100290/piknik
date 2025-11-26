@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Lieu{% endblock %}
+
+{% block body %}
+    <h1>Create new Lieu</h1>
+
+    {{ include('lieu/_form.html.twig') }}
+    {# Afficher le label #}
+{{ lieu.etat.label }}
+{{ lieu.valo.label }}
+
+{# Afficher la valeur brute #}
+{{ lieu.etat.value }}
+{{ lieu.valo.value }}
+
+    <a href="{{ path('app_lieu_index') }}">back to list</a>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Lieu;
+use App\Enum\ValidationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,7 +16,16 @@ class LieuRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Lieu::class);
     }
-
+    
+ public function findValideLieux(): array
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.etat = :etat')
+            ->setParameter('etat', ValidationStatus::VALIDE)
+            ->orderBy('l.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Lieu[] Returns an array of Lieu objects
 //     */

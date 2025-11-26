@@ -25,7 +25,7 @@ class Categorie
 
     /*Satut d'une catégorie */
     #[ORM\Column(enumType: VisualisationStatus::class)]
-    private ?VisualisationStatus $statusVisu = null;
+    private ?VisualisationStatus $statusVisu = VisualisationStatus::ACTIF;
 
     /**
      * @var Collection<int, Lieu>
@@ -36,13 +36,15 @@ class Categorie
     public function __construct()
     {
         $this->lieus = new ArrayCollection();
+        // La date s’auto-génère dès la création de l’objet
+        $this->date_creat = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-
+   
     public function getNom(): ?string
     {
         return $this->nom;
@@ -54,7 +56,10 @@ class Categorie
 
         return $this;
     }
-
+      public function __toString(): string
+    {
+        return $this->nom ?? '';
+    }
     public function getDateCreat(): ?\DateTimeImmutable
     {
         return $this->date_creat;

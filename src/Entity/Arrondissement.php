@@ -27,9 +27,17 @@ class Arrondissement
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'fk_arrondissement')]
     private Collection $users;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $date_creat = null;
+
+    #[ORM\ManyToOne(inversedBy: 'arrondissements')]
+    private ?Commune $fk_commune = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        // La date s’auto-génère dès la création de l’objet
+        $this->date_creat = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -87,6 +95,30 @@ class Arrondissement
                 $user->setFkArrondissement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateCreat(): ?\DateTimeImmutable
+    {
+        return $this->date_creat;
+    }
+
+    public function setDateCreat(\DateTimeImmutable $date_creat): static
+    {
+        $this->date_creat = $date_creat;
+
+        return $this;
+    }
+
+    public function getFkCommune(): ?Commune
+    {
+        return $this->fk_commune;
+    }
+
+    public function setFkCommune(?Commune $fk_commune): static
+    {
+        $this->fk_commune = $fk_commune;
 
         return $this;
     }
