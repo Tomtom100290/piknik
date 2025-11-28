@@ -45,8 +45,8 @@ class Lieu
     private ValidationStatus $etat = ValidationStatus::EN_ATTENTE;
 
     /*Valorisation des équipement */
-    #[ORM\Column(enumType: ValorisationEquipement::class)]
-    private ValorisationEquipement $valo = ValorisationEquipement::INTERET_BON; 
+    //#[ORM\Column(enumType: ValorisationEquipement::class)]
+    //private ValorisationEquipement $valo = ValorisationEquipement::INTERET_BON; 
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
     private ?Categorie $categorie_fk = null;
@@ -73,6 +73,12 @@ class Lieu
     #[ORM\OneToMany(targetEntity: Favoris::class, mappedBy: 'fk_lieu')]
     private Collection $favoris;
 
+    /**
+     * @var Collection<int, Equipement>
+     */
+    #[ORM\ManyToMany(targetEntity: Equipement::class, inversedBy: 'lieus')]
+    private Collection $fk_equipement;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -80,6 +86,7 @@ class Lieu
         $this->favoris = new ArrayCollection();
         // La date s’auto-génère dès la création de l’objet
         $this->date_creat = new \DateTimeImmutable();
+        $this->fk_equipement = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,7 +133,7 @@ class Lieu
     }
 
     /*ENUM pour la valorisation des équipements */
-    public function getValo(): ValorisationEquipement
+   /* public function getValo(): ValorisationEquipement
     {
         return $this->valo;
     }
@@ -135,7 +142,7 @@ class Lieu
     {
         $this->valo = $valo;
         return $this;
-    }
+    }*/
 
     public function isStatut(): ?bool
     {
@@ -271,6 +278,30 @@ class Lieu
                 $favori->setFkLieu(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Equipement>
+     */
+    public function getFkEquipement(): Collection
+    {
+        return $this->fk_equipement;
+    }
+
+    public function addFkEquipement(Equipement $fkEquipement): static
+    {
+        if (!$this->fk_equipement->contains($fkEquipement)) {
+            $this->fk_equipement->add($fkEquipement);
+        }
+
+        return $this;
+    }
+
+    public function removeFkEquipement(Equipement $fkEquipement): static
+    {
+        $this->fk_equipement->removeElement($fkEquipement);
 
         return $this;
     }

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categorie;
 use App\Entity\Commune;
+use App\Entity\Equipement;
 use App\Entity\Lieu;
 use App\Enum\ValidationStatus;
 use App\Enum\ValorisationEquipement;
@@ -34,10 +35,12 @@ class LieuType extends AbstractType
                 'class' => ValidationStatus::class,
                 'choice_label' => fn(ValidationStatus $status) => $status->getLabel(),
             ])
-            ->add('valo', EnumType::class, [
-                'class' => ValorisationEquipement::class,
-                'choice_label' => fn(ValorisationEquipement $valo) => $valo->getLabel(),
-            ])
+            ->add('fk_equipement', EntityType::class, [
+                'class' => Equipement::class,
+                'choice_label' => 'nom',   // ou 'valo', ou getLabel()
+                'multiple' => true,
+                'expanded' => true,        // checkboxes (ou false pour un select multiple)
+                ])
             ->add('categorie_fk', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',

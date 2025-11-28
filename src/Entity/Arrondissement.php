@@ -24,8 +24,8 @@ class Arrondissement
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'fk_arrondissement')]
-    private Collection $users;
+   /* #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'fk_arrondissement')]
+    private Collection $users;*/
 
     #[ORM\Column]
     private ?\DateTimeImmutable $date_creat = null;
@@ -35,7 +35,7 @@ class Arrondissement
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+       /* $this->users = new ArrayCollection();*/
         // La date s’auto-génère dès la création de l’objet
         $this->date_creat = new \DateTimeImmutable();
     }
@@ -69,10 +69,10 @@ class Arrondissement
         return $this;
     }
 
-    /**
+   /* /**
      * @return Collection<int, User>
      */
-    public function getUsers(): Collection
+   /* public function getUsers(): Collection
     {
         return $this->users;
     }
@@ -98,7 +98,7 @@ class Arrondissement
 
         return $this;
     }
-
+*/
     public function getDateCreat(): ?\DateTimeImmutable
     {
         return $this->date_creat;

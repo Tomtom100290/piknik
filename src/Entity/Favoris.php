@@ -17,7 +17,17 @@ class Favoris
     private ?\DateTimeImmutable $date_creat = null;
 
     #[ORM\ManyToOne(inversedBy: 'favoris')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $fk_lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'favoris')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $fkUser = null;
+
+    public function __construct()
+    {
+        $this->date_creat = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +54,18 @@ class Favoris
     public function setFkLieu(?Lieu $fk_lieu): static
     {
         $this->fk_lieu = $fk_lieu;
+
+        return $this;
+    }
+
+    public function getFkUser(): ?User
+    {
+        return $this->fkUser;
+    }
+
+    public function setFkUser(?User $fkUser): static
+    {
+        $this->fkUser = $fkUser;
 
         return $this;
     }

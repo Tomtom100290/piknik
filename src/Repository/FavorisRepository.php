@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Favoris;
+use App\Entity\Lieu;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +16,10 @@ class FavorisRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Favoris::class);
+    }
+     public function isLieuFavori(User $user, Lieu $lieu): bool
+    {
+        return $this->count(['fkUser' => $user, 'fk_lieu' => $lieu]) > 0;
     }
 
     //    /**

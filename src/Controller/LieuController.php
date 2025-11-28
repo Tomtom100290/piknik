@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Equipement;
+use App\Entity\Favoris;
 use App\Entity\Image;
 use App\Entity\Lieu;
 use App\Form\LieuType;
@@ -64,11 +66,22 @@ final class LieuController extends AbstractController
 }
 
     #[Route('/{id}', name: 'app_lieu_show', methods: ['GET'])]
-    public function show(Lieu $lieu): Response
-    {
-        return $this->render('lieu/show.html.twig', [
-            'lieu' => $lieu,
-        ]);
+    public function show(Lieu $lieu,
+    EntityManagerInterface $em
+): Response {
+    $isFavori = false;
+    
+    if ($this->getUser()) {
+        $isFavori = $em->getRepository(Favoris::class)->isLieuFavori(
+            $this->getUser(),
+            $lieu
+        );
+    }
+    
+    return $this->render('lieu/show.html.twig', [
+        'lieu' => $lieu,
+        'is_favori' => $isFavori,
+    ]);
     }
 
     #[Route('/{id}/edit', name: 'app_lieu_edit', methods: ['GET', 'POST'])]

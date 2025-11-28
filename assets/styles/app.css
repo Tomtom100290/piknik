@@ -1,3 +1,52 @@
 body {
     background-color: skyblue;
 }
+
+/* SHOW */
+.EquimShow{
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+}
+.Equimnt{
+ width: 90px;
+ height: 90px;
+ border-radius: 5px;
+ background-color: rgb(99, 146, 122);
+ margin: 16px;
+}
+.EquimntNom h3{
+    text-align: center;
+    vertical-align: middle;
+}
+
+/*FAVORIS*/
+
+/* public/css/favoris.css */
+.btn-favoris {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.btn-favoris:hover {
+    border-color: #ff6b6b;
+    background: #fff5f5;
+    transform: scale(1.05);
+}
+
+.heart-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.favoris-text {
+    font-weight: 500;
+}

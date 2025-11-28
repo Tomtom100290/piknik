@@ -5,6 +5,27 @@
 {% block body %}
     <h1>Lieu</h1>
 
+
+
+
+   <div class="EquimShow">
+    {% if lieu.fkEquipement|length > 0 %}
+        {% for equipement in lieu.fkEquipement %}
+            <div class="Equimnt">
+                <div class="EquimntNom">
+                    <h3>{{ equipement.nom }}</h3>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div>Aucun équipement.</div>
+    {% endif %}
+</div>
+
+
+
+
+    </div>
     <table class="table">
         <tbody>
             <tr>
@@ -32,10 +53,6 @@
                 <td>{{ lieu.etat.value }}</td>
             </tr>
             <tr>
-                <th>Valo</th>
-                <td>{{ lieu.valo.value }}</td>
-            </tr>
-            <tr>
                 <th>Images</th>
     <td>
         {% if lieu.images|length > 0 %}
@@ -57,4 +74,33 @@
     <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
 
     {{ include('lieu/_delete_form.html.twig') }}
+    <div class="lieu-details">
+    <h1>{{ lieu.nom }}</h1>
+    
+    
+        <button 
+            class="btn-favoris" 
+            data-lieu-id="{{ lieu.id }}"
+            data-is-favori="{{ is_favori ? 'true' : 'false' }}"
+        >
+            <span class="heart-icon">
+                {% if is_favori %}
+                    ❤️
+                {% else %}
+                    🤍
+                {% endif %}
+            </span>
+            <span class="favoris-text">
+                {{ is_favori ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+            </span>
+        </button>
+    
+    
+    {# Autres informations du lieu #}
+</div>
+❤️
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/favoris.js') }}"></script>
 {% endblock %}

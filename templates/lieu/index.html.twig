@@ -14,7 +14,7 @@
                 <th>Statut</th>
                 <th>Date_creat</th>
                 <th>Etat</th>
-                <th>Valo</th>
+                <th>Equipements</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -27,7 +27,13 @@
                 <td>{{ lieu.statut ? 'Yes' : 'No' }}</td>
                 <td>{{ lieu.dateCreat ? lieu.dateCreat|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ lieu.etat.value }}</td>
-                <td>{{ lieu.valo.value }}</td>
+                <td>
+                    {% for equipement in lieu.fkEquipement %}
+                        {{ equipement.nom }} {# ou autre field #}
+                    {% else %}
+                        Aucun équipement.
+                    {% endfor %}
+                </td>
                 <td>
                     <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
                     <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
