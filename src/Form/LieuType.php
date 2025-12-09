@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\File; // ⚠️ Import obligatoire
+use Symfony\Component\Validator\Constraints\File;
 
 class LieuType extends AbstractType
 {
@@ -27,20 +27,15 @@ class LieuType extends AbstractType
         $builder
             ->add('nom')
             ->add('description')
-            ->add('statut')
             ->add('date_creat', null, [
                 'widget' => 'single_text',
-            ])
-            ->add('etat', EnumType::class, [
-                'class' => ValidationStatus::class,
-                'choice_label' => fn(ValidationStatus $status) => $status->getLabel(),
             ])
             ->add('fk_equipement', EntityType::class, [
                 'class' => Equipement::class,
                 'choice_label' => 'nom',   // ou 'valo', ou getLabel()
                 'multiple' => true,
                 'expanded' => true,        // checkboxes (ou false pour un select multiple)
-                ])
+            ])
             ->add('categorie_fk', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',

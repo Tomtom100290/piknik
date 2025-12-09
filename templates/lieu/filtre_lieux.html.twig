@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filtrer les lieux
+{% endblock %}
+
+{% block body %}
+	<h1>🔎 Filtrer les lieux par équipement</h1>
+
+	{{ form_start(form) }}
+	{{ form_widget(form) }}
+	<button type="submit">Filtrer</button>
+	{{ form_end(form) }}
+
+	<hr>
+
+	<h2>Résultats :</h2>
+
+	{% if lieux is empty %}
+		<p>Aucun lieu ne correspond à votre recherche.</p>
+	{% else %}
+		<ul>
+			{% for lieu in lieux %}
+				<li>
+					{% for image in lieu.images %}
+						<div class="imgShow" style="background-image: url('{{ vich_uploader_asset(image, 'imageFile') }}');"></div>
+					{% endfor %}
+
+					<strong>{{ lieu.nom }}</strong><br>
+					{{ lieu.description }}<br>
+
+					<em>Équipements :</em>
+					<ul>
+						{% for eq in lieu.fkEquipement %}
+							<li>{{ eq.nom }}</li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}

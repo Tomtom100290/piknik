@@ -17,33 +17,28 @@ class FavorisRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Favoris::class);
     }
-     public function isLieuFavori(User $user, Lieu $lieu): bool
+    public function isLieuFavori(User $user, Lieu $lieu): bool
     {
         return $this->count(['fkUser' => $user, 'fk_lieu' => $lieu]) > 0;
     }
 
-    //    /**
-    //     * @return Favoris[] Returns an array of Favoris objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Favoris
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findByUser($user): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.fkUser = :user')
+            ->setParameter('user', $user)
+            ->orderBy('f.dateCreat', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findTopFavoris(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('l.id, l.nom, l.description, COUNT(f.id) AS favoris_count')
+            ->join('f.fk_lieu', 'l')
+            ->groupBy('l.id')
+            ->orderBy('favoris_count', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

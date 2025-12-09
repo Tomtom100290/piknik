@@ -34,10 +34,10 @@ class Lieu
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?bool $statut = null;
+    private ?bool $statut = true;
 
     #[ORM\Column]
-    
+
     private ?\DateTimeImmutable $date_creat = null;
 
     /*Validation */
@@ -93,7 +93,7 @@ class Lieu
     {
         return $this->id;
     }
-     public function __toString(): string
+    public function __toString(): string
     {
         return $this->nom ?? '';
     }
@@ -133,7 +133,7 @@ class Lieu
     }
 
     /*ENUM pour la valorisation des équipements */
-   /* public function getValo(): ValorisationEquipement
+    /* public function getValo(): ValorisationEquipement
     {
         return $this->valo;
     }

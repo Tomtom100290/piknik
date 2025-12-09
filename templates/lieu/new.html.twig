@@ -1,18 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Lieu{% endblock %}
+{% block title %}New Lieu
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Lieu</h1>
+	<h1>Create new Lieu</h1>
+	<div class="form-card">
 
-    {{ include('lieu/_form.html.twig') }}
-    {# Afficher le label #}
-{{ lieu.etat.label }}
+		{{ form_start(form) }}
+
+		<h2 class="form-title">Créer un lieu</h2>
+
+		<div class="form-group">
+			{{ form_label(form.nom) }}
+			{{ form_widget(form.nom, { attr: { class: 'form-input' } }) }}
+			{{ form_errors(form.nom) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.description) }}
+			{{ form_widget(form.description, { attr: { class: 'form-textarea' } }) }}
+			{{ form_errors(form.description) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.date_creat) }}
+			{{ form_widget(form.date_creat, { attr: { class: 'form-input' } }) }}
+			{{ form_errors(form.date_creat) }}
+		</div>
+
+		<div class="form-group">
+			<label class="labelForm">Équipements</label>
+			<div class="checkbox-group">
+				{{ form_widget(form.fk_equipement) }}
+			</div>
+			{{ form_errors(form.fk_equipement) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.categorie_fk) }}
+			{{ form_widget(form.categorie_fk, { attr: { class: 'form-select' } }) }}
+			{{ form_errors(form.categorie_fk) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.Arrondissement) }}
+			{{ form_widget(form.Arrondissement, { attr: { class: 'form-select' } }) }}
+			{{ form_errors(form.Arrondissement) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.imagesFiles) }}
+			{{ form_widget(form.imagesFiles, { attr: { class: 'form-file' } }) }}
+			{{ form_errors(form.imagesFiles) }}
+		</div>
+
+		<button type="submit" class="btn-submit">Enregistrer</button>
+
+		{{ form_end(form) }}
+	</div>
 
 
-{# Afficher la valeur brute #}
-{{ lieu.etat.value }}
+	{# Afficher le label #}
+	{{ lieu.etat.label }}
 
 
-    <a href="{{ path('app_lieu_index') }}">back to list</a>
+	{# Afficher la valeur brute #}
+	{{ lieu.etat.value }}
+
+
+	<a href="{{ path('app_lieu_index') }}">back to list</a>
 {% endblock %}

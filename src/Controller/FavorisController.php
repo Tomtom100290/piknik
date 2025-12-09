@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Favoris;
 use App\Entity\Lieu;
+use App\Repository\FavorisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,61 +14,56 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class FavorisController extends AbstractController
 {
-    #[Route('/favoris/toggle/{id}', name: 'favoris_toggle', methods: ['POST'])]
+    #[Route('/lieu/{id}/toggle-favoris', name: 'app_lieu_toggle_favoris', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function toggle(
-        Lieu $lieu,
-        EntityManagerInterface $em
-    ): JsonResponse {
-        $user = $this->getUser();
-        
-        // Vérifier si le lieu est déjà en favori
-        // CORRECTION ICI : utiliser 'fk_lieu' au lieu de 'fkLieu'
-        $favoris = $em->getRepository(Favoris::class)->findOneBy([
-            'fkUser' => $user,
-            'fk_lieu' => $lieu  // ⚠️ Changement ici
-        ]);
-
-        if ($favoris) {
-            // Retirer des favoris
-            $em->remove($favoris);
-            $em->flush();
-            
-            return new JsonResponse([
-                'success' => true,
-                'action' => 'removed',
-                'message' => 'Lieu retiré des favoris'
-            ]);
-        } else {
-            // Ajouter aux favoris
-            $favoris = new Favoris();
-            $favoris->setFkUser($user);
-            $favoris->setFkLieu($lieu);
-            $favoris->setDateCreat(new \DateTimeImmutable()); // ⚠️ N'oubliez pas d'initialiser la date
-            
-            $em->persist($favoris);
-            $em->flush();
-            
-            return new JsonResponse([
-                'success' => true,
-                'action' => 'added',
-                'message' => 'Lieu ajouté aux favoris'
-            ]);
-        }
-    }
-
-    #[Route('/mes-favoris', name: 'app_mes_favoris')]
-    #[IsGranted('ROLE_USER')]
-    public function mesFavoris(EntityManagerInterface $em): Response
+    public function toggleFavoris(Lieu $lieu, EntityManagerInterface $em): JsonResponse
     {
         $user = $this->getUser();
-        
-        $favoris = $em->getRepository(Favoris::class)->findBy(
-            ['fkUser' => $user],
-            ['date_creat' => 'DESC']
-        );
 
-        return $this->render('favoris/index.html.twig', [
+        // Vérifier si le favori existe déjà
+        $favorisExistant = $em->getRepository(Favoris::class)->findOneBy([
+            'fk_lieu' => $lieu,
+            'fkUser' => $user
+        ]);
+
+        if ($favorisExistant) {
+            // Supprimer le favori
+            $em->remove($favorisExistant);
+            $em->flush();
+
+            return $this->json([
+                'success' => true,
+                'action' => 'removed',
+                'message' => 'Retiré des favoris'
+            ]);
+        }
+
+        // Ajouter aux favoris
+        $favoris = new Favoris();
+        $favoris->setFkLieu($lieu);
+        $favoris->setFkUser($user);
+
+        $em->persist($favoris);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'action' => 'added',
+            'message' => 'Ajouté aux favoris'
+        ]);
+    }
+    #[Route('/mes-favoris', name: 'mes_favoris')]
+    public function index(FavorisRepository $favorisRepository): Response
+    {
+        $user = $this->getUser(); // récupère l'utilisateur connecté
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté.');
+        }
+
+        // $user est typé UserInterface, getId() fonctionne si User a la méthode getId()
+        $favoris = $favorisRepository->findBy(['fkUser' => $user]);
+
+        return $this->render('favoris/mesfavoris.html.twig', [
             'favoris' => $favoris,
         ]);
     }

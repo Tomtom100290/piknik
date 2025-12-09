@@ -1,51 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lieu index{% endblock %}
+{% block title %}Lieu index
+{% endblock %}
 
 {% block body %}
-    <h1>Lieu index</h1>
+	{% if app.user %}
+		<div class="mb-3">
+			Vous êtes connecté en tant que
+			{{ app.user.userIdentifier }},
+			<a href="{{ path('app_logout') }}">Logout</a>
+		</div>
+	{% endif %}
+	<h1>Lieu index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Statut</th>
-                <th>Date_creat</th>
-                <th>Etat</th>
-                <th>Equipements</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for lieu in lieus %}
-            <tr>
-                <td>{{ lieu.id }}</td>
-                <td>{{ lieu.nom }}</td>
-                <td>{{ lieu.description }}</td>
-                <td>{{ lieu.statut ? 'Yes' : 'No' }}</td>
-                <td>{{ lieu.dateCreat ? lieu.dateCreat|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ lieu.etat.value }}</td>
-                <td>
-                    {% for equipement in lieu.fkEquipement %}
-                        {{ equipement.nom }} {# ou autre field #}
-                    {% else %}
-                        Aucun équipement.
-                    {% endfor %}
-                </td>
-                <td>
-                    <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
-                    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Nom</th>
+				<th>Description</th>
+				<th>Statut</th>
+				<th>Date_creat</th>
+				<th>Etat</th>
+				<th>Equipements</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for lieu in lieus %}
+				<tr>
+					<td>{{ lieu.id }}</td>
+					<td>{{ lieu.nom }}</td>
+					<td>{{ lieu.description }}</td>
+					<td>{{ lieu.statut ? 'Yes' : 'No' }}</td>
+					<td>{{ lieu.dateCreat ? lieu.dateCreat|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ lieu.etat.value }}</td>
+					<td>
+						{% for equipement in lieu.fkEquipement %}
+							{{ equipement.nom }}
+							{# ou autre field #}
+						{% else %}
+							Aucun équipement.
+						{% endfor %}
+					</td>
+					<td>
+						<a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
+						<a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="8">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_lieu_new') }}">Create new</a>
+	<a href="{{ path('app_lieu_new') }}">Nouveau</a>
 {% endblock %}

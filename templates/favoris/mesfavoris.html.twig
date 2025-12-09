@@ -1,0 +1,22 @@
+<h1>Mes favoris</h1>
+<ul>
+	{% for fav in favoris %}
+		<li>{{ fav.fklieu.nom }}</li>
+		<li>{{ fav.fklieu.description }}</li>
+		<li>{{ fav.fklieu.categoriefk }}</li>
+		<li>{{ fav.fklieu.arrondissement }}</li>
+		<li>
+			{% if fav.fklieu.images|length > 0 %}
+				{% for image in fav.fklieu.images %}
+					<img src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="{{ fav.fklieu.nom }}" style="max-width:150px;display:block;margin-bottom:6px;"/>
+				{% endfor %}
+			{% else %}
+				Pas d'images
+			{% endif %}
+		</li>
+
+		- ajouté le
+		{{ fav.dateCreat|date('d/m/Y') }}</li>
+{% else %}
+	<li>Vous n’avez pas encore de favoris.</li>
+{% endfor %}</ul>

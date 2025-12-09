@@ -1,0 +1,26 @@
+<table>
+	<tr>
+		<th>Lieu</th>
+		<th>Description</th>
+		<th>Nombre de favoris</th>
+		<th>Avis moyen</th>
+	</tr>
+
+	{% for top in topLieux %}
+		{{ dump(top) }}
+		<tr>
+			<td>{{ top.nom }}</td>
+			<td>{{ top.description }}</td>
+			<td>{{ top.favoris_count }}</td>
+			<td>
+				{% if moyennesNotes[top.id] is defined %}
+					<strong>{{ moyennesNotes[top.id]|number_format(1, ',', ' ') }}</strong>
+					/ 5
+					<span style="color: gold;">★</span>
+				{% else %}
+					<em>Pas encore d'avis</em>
+				{% endif %}
+			</td>
+		</tr>
+	{% endfor %}
+</table>

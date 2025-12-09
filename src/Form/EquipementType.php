@@ -19,7 +19,7 @@ class EquipementType extends AbstractType
                 'choices' => ValorisationEquipement::cases(),
                 'choice_label' => fn(ValorisationEquipement $v) => $v->getLabel(),
                 'choice_value' => fn(?ValorisationEquipement $v) => $v?->value,
-    ])
+            ])
             ->add('date_creat', null, [
                 'widget' => 'single_text',
             ])

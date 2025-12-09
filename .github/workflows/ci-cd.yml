@@ -1,0 +1,46 @@
+name: CI/CD
+
+on:
+  push:
+    branches: ["main"] /* Trigger on pushes to the main branch */
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+
+  deploy:
+    name: Deploy to Railway
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        uses: railwayapp/railway-deploy@v1
+        with:
+          serviceId: ${{ secrets.RAILWAY_SERVICE_ID }}
+          railwayToken: ${{ secrets.RAILWAY_TOKEN }}

@@ -1,106 +1,280 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lieu{% endblock %}
+{% block title %}
+	{{ lieu.nom }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.btn-favoris {
+			background: none;
+			border: 2px solid #e74c3c;
+			padding: 10px 20px;
+			border-radius: 50px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 1.2rem;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-favoris:hover {
+			background-color: #e74c3c;
+			transform: scale(1.05);
+		}
+
+		.btn-favoris.active {
+			background-color: #e74c3c;
+			color: white;
+		}
+
+		.heart-icon {
+			transition: transform 0.3s ease;
+		}
+
+		.btn-favoris:hover .heart-icon {
+			transform: scale(1.2);
+		}
+	</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Lieu</h1>
+	<div class="container mt-5">
+		<div class="lieu-header d-flex justify-content-between align-items-center mb-4">
+			<h1>{{ lieu.nom }}</h1>
+
+			{% if app.user %}
+				<button type="button" class="btn-favoris {{ is_favoris ? 'active' : '' }}" data-lieu-id="{{ lieu.id }}" data-url="{{ path('app_lieu_toggle_favoris', {'id': lieu.id}) }}" id="btn-favoris" aria-pressed="{{ is_favoris ? 'true' : 'false' }}">
+					<span class="heart-icon">{{ is_favoris ? '❤️' : '🤍' }}</span>
+					<span class="favoris-text">{{ is_favoris ? 'Favori' : 'Ajouter aux favoris' }}</span>
+				</button>
+			{% else %}
+				<a href="{{ path('app_login') }}" class="btn btn-secondary">
+					Connectez-vous pour ajouter aux favoris
+				</a>
+			{% endif %}
+		</div>
+
+		<div class="lieu-details">
+			<p>
+				<strong>Description :</strong>
+				{{ lieu.description }}</p>
+			<p>
+				<strong>Statut :</strong>
+				{{ lieu.isStatut ? 'Actif' : 'Inactif' }}</p>
+			<p>
+				<strong>Catégorie :</strong>
+				{{ lieu.categorieFk ? lieu.categorieFk : 'N/A' }}</p>
+			<p>
+				<strong>Arrondissement :</strong>
+				{{ lieu.arrondissement ? lieu.arrondissement : 'N/A' }}</p>
+			<p>
+				<strong>Date de création :</strong>
+				{{ lieu.dateCreat|date('d/m/Y') }}</p>
+
+			{# Afficher les images si disponibles #}
+			{% if lieu.images|length > 0 %}
+				<div class="images mt-4">
+					<h3>Images</h3>
+					<div class="row">
+						{% for image in lieu.images %}
+							<div class="col-md-4 mb-3">
+								<img src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="Image de {{ lieu.nom }}" class="img-fluid rounded">
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
+
+			{# Afficher les équipements si disponibles #}
+			{% if lieu.fkEquipement|length > 0 %}
+				<div class="equipements mt-4">
+					<h3>Équipements</h3>
+					<ul>
+						{% for equipement in lieu.fkEquipement %}
+							<li>{{ equipement }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
 
 
+			<h2>Ajouter un avis</h2>
 
+			{% if app.user %}
+				{# Le formulaire d'ajout d'avis n'est pas instancié côté contrôleur pour le moment.
+																												   Si vous souhaitez réactiver la saisie d'avis, créer un FormType (par ex. AvisType)
+																												   et le passer au template sous le nom `formAvis` (FormView), puis utiliser
+																												   `form_start(formAvis)` / `form_row(formAvis.field)` ici. #}
+				<p>La saisie d'un nouvel avis n'est pas disponible pour l'instant.</p>
+			{% else %}
+				<p>
+					<a href="{{ path('app_login') }}">Connectez-vous</a>
+					pour laisser un avis.</p>
+			{% endif %}
 
-   <div class="EquimShow">
-    {% if lieu.fkEquipement|length > 0 %}
-        {% for equipement in lieu.fkEquipement %}
-            <div class="Equimnt">
-                <div class="EquimntNom">
-                    <h3>{{ equipement.nom }}</h3>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div>Aucun équipement.</div>
-    {% endif %}
-</div>
+			<hr>
 
+			<h2>Liste des avis</h2>
 
+			{% for a in avis %}
+				<div class="card mt-3 p-3">
+					<strong>Note :
+						{{ a.note }}/5</strong>
+					<p>{{ a.commentaire }}</p>
 
+					<small>
+						Posté par :
+						{{ a.fkUser ? a.fkUser.email : 'Utilisateur supprimé' }}
+						<br>
+						Statut :
+						{{ a.isStatut ? 'Validé' : 'En attente' }}
+					</small>
+				</div>
+			{% else %}
+				<p>Aucun avis pour ce lieu.</p>
+			{% endfor %}
+			{# Afficher les avis si disponibles #}
+			{% if lieu.avis|length > 0 %}
+				<div class="avis mt-4">
+					<h3>Avis ({{ lieu.avis|length }})</h3>
+					{% for avi in lieu.avis %}
+						<div class="card mb-2">
+							<div class="card-body">
+								<p>{{ avi.commentaire }}</p>
+								<small class="text-muted">{{ avi.dateCreat|date('d/m/Y') }}</small>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
 
-    </div>
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ lieu.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ lieu.nom }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ lieu.description }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ lieu.statut ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Date_creat</th>
-                <td>{{ lieu.dateCreat ? lieu.dateCreat|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Etat</th>
-                <td>{{ lieu.etat.value }}</td>
-            </tr>
-            <tr>
-                <th>Images</th>
-    <td>
-        {% if lieu.images|length > 0 %}
-            {% for image in lieu.images %}
-                <img src="{{ asset('uploads/lieux/' ~ image.imageName) }}"
-                     alt="Image du lieu"
-                     style="max-height: 100px; margin: 5px;">
-            {% endfor %}
-        {% else %}
-            <p>Aucune image disponible</p>
-        {% endif %}
-    </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_lieu_index') }}">back to list</a>
-
-    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
-
-    {{ include('lieu/_delete_form.html.twig') }}
-    <div class="lieu-details">
-    <h1>{{ lieu.nom }}</h1>
-    
-    
-        <button 
-            class="btn-favoris" 
-            data-lieu-id="{{ lieu.id }}"
-            data-is-favori="{{ is_favori ? 'true' : 'false' }}"
-        >
-            <span class="heart-icon">
-                {% if is_favori %}
-                    ❤️
-                {% else %}
-                    🤍
-                {% endif %}
-            </span>
-            <span class="favoris-text">
-                {{ is_favori ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
-            </span>
-        </button>
-    
-    
-    {# Autres informations du lieu #}
-</div>
-❤️
+		<div class="mt-4">
+			<a href="{{ path('app_lieu_index') }}" class="btn btn-secondary">Retour à la liste</a>
+		</div>
+	</div>
 {% endblock %}
+
 {% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('js/favoris.js') }}"></script>
+	{{ parent() }}
+	<script>
+		(function () {
+function handleFavorisClick(btn) {
+if (! btn) 
+return;
+
+
+
+const lieuId = btn.dataset.lieuId;
+const url = btn.dataset.url || `/lieu/${lieuId}/toggle-favoris`;
+console.log('Favoris click', {lieuId, url});
+
+fetch(url, {
+method: 'POST',
+credentials: 'same-origin',
+headers: {
+'X-Requested-With': 'XMLHttpRequest',
+'Content-Type': 'application/json'
+},
+body: JSON.stringify({})
+}).then(response => {
+if (!response.ok) {
+return response.text().then(text => {
+try {
+return JSON.parse(text);
+} catch (e) {
+return text;
+}
+}).then(err => {
+throw err;
+});
+}
+return response.json();
+}).then(data => {
+console.log('Favoris response data:', data);
+const heartIcon = btn.querySelector('.heart-icon');
+const text = btn.querySelector('.favoris-text');
+
+if (data.success) {
+if (data.action === 'added') {
+btn.classList.add('active');
+if (heartIcon) 
+heartIcon.textContent = '❤️';
+
+
+
+if (text) 
+text.textContent = 'Favori';
+
+
+
+btn.setAttribute('aria-pressed', 'true');
+btn.dataset.isFavoris = '1';
+} else {
+btn.classList.remove('active');
+if (heartIcon) 
+heartIcon.textContent = '🤍';
+
+
+
+if (text) 
+text.textContent = 'Ajouter aux favoris';
+
+
+
+btn.setAttribute('aria-pressed', 'false');
+btn.dataset.isFavoris = '0';
+} btn.style.transform = 'scale(1.2)';
+setTimeout(() => {
+btn.style.transform = 'scale(1)';
+}, 200);
+
+btn.dispatchEvent(new CustomEvent('favoris:changed', {detail: data}));
+} else {
+console.warn('Favoris returned success:false', data);
+}
+}).catch(error => {
+console.error('Erreur favoris:', error);
+let message = 'Une erreur est survenue';
+if (error && error.message) 
+message = error.message;
+
+
+
+if (typeof error === 'string') 
+message = error;
+
+
+
+let alertEl = document.getElementById('favoris-alert');
+if (! alertEl) {
+alertEl = document.createElement('div');
+alertEl.id = 'favoris-alert';
+alertEl.style.marginTop = '10px';
+alertEl.style.color = 'red';
+const container = document.querySelector('.lieu-header') || document.body;
+container.appendChild(alertEl);
+}
+alertEl.textContent = message;
+});
+}
+
+function onClick(e) {
+const btn = e.target.closest('#btn-favoris');
+if (! btn) 
+return;
+
+
+
+e.preventDefault();
+handleFavorisClick(btn);
+}
+
+document.addEventListener('click', onClick);
+document.addEventListener('turbo:load', function () {});
+})();
+	</script>
 {% endblock %}

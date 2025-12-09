@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Enum;
 
 enum ValidationStatus: string
@@ -9,11 +10,10 @@ enum ValidationStatus: string
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EN_ATTENTE => 'En attente',
             self::VALIDE => 'Validé',
             self::REFUSE => 'Refusé',
         };
     }
-
 }

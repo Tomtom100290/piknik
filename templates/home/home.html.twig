@@ -1,20 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Piknik la Réunion 974{% endblock %}
+{% block title %}Piknik la Réunion 974
+{% endblock %}
 
 {% block body %}
-<!--Bloc de la page d'accueil-->
-<div class="BlocHome">
- <h1>Vos favoris</h1>
- <div class="Filtres"></div>
-    <div class="LieuPopulaire">
-        <h2>Les mieux notés</h2>
-    </div>
-    <div class="LieuFavoris">
-        <h2>Vos favoris</h2>
-    </div>
-    <div class="LieuNvx">
-        <h2>Récemment ajoutés</h2>
-    </div>
-</div>
+	<!--Bloc de la page d'accueil-->
+	<div
+		class="BlocHome">
+		<!--HEADER-->
+		<div class="HeaderHome">
+			<h1>PikNik</h1>
+		</div>
+		<!--LIEUX POPULAIRES-->
+		<div class="LieuPopulaire">
+			<h2>Les mieux notés</h2>
+		</div>
+		<!--FILTRES-->
+		<div class="Filtres"></div>
+		<!--TOUS LES LIEUX-->
+		<div class="LieuTous">
+			<h2>Lieux de pique-nique</h2>
+		</div>
+		<!--NOUVEAUX LIEUX-->
+		<div class="LieuNvx">
+			<h2>Récemment ajoutés</h2>
+		</div>
+	</div>
 {% endblock %}

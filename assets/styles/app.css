@@ -1,21 +1,74 @@
 body {
-    background-color: skyblue;
+    background-color: rgb(237, 246, 248);
+    margin: 0px;
+    padding: 0px;
+}
+
+/*-------- HOME ---------*/
+.BlocHome {
+    width: 100%;
+}
+
+.HeaderHome {
+    width: 100%;
+    height: 400px;
+    background-color: rgb(66, 64, 64);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Filtres {
+    width: 80%;
+    height: 70px;
+    border: 1px solid #a1a1a1;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+    margin: 32px auto;
+}
+
+.LieuPopulaire,
+.LieuNvx {
+    width: 80%;
+    margin: 16px auto;
+    height: 280px;
+    background-color: #dee1e1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.LieuTous {
+    width: 80%;
+    margin: 16px auto;
+    height: 560px;
+    background-color: #dee1e1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* SHOW */
-.EquimShow{
+.EquimShow {
     width: 100%;
     flex-wrap: wrap;
     display: flex;
 }
-.Equimnt{
- width: 90px;
- height: 90px;
- border-radius: 5px;
- background-color: rgb(99, 146, 122);
- margin: 16px;
+
+.Equimnt {
+    width: 90px;
+    height: 90px;
+    border-radius: 5px;
+    background-color: rgb(99, 146, 122);
+    margin: 16px;
 }
-.EquimntNom h3{
+
+.EquimntNom h3 {
     text-align: center;
     vertical-align: middle;
 }
@@ -49,4 +102,145 @@ body {
 
 .favoris-text {
     font-weight: 500;
+}
+
+/**lieux***/
+.imgShow {
+    width: 200px;
+    height: 150px;
+    overflow: hidden;
+    background-size: contain;
+    background-position: center;
+
+}
+
+/* FORMULAIRE */
+/* --- CARD --- */
+.form-card {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    font-family: "Inter", sans-serif;
+}
+
+/* --- FORM TITLE --- */
+.form-title {
+    margin-bottom: 25px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+/* --- FORM GROUP --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* --- INPUTS --- */
+.form-input,
+.form-select,
+.form-textarea,
+.form-file {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    font-size: 15px;
+    transition: border 0.2s,
+        background 0.2s;
+    -webkit-transition: border 0.2s, background 0.2s;
+    -moz-transition: border 0.2s, background 0.2s;
+    -ms-transition: border 0.2s, background 0.2s;
+    -o-transition: border 0.2s, background 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+.form-file:focus {
+    border-color: #4A90E2;
+    background: white;
+    outline: none;
+}
+
+/* --- TEXTAREA --- */
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* --- CHECKBOX GROUP --- */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    /* passe à la ligne si trop long */
+    gap: 12px 20px;
+    /* espace horizontal/vertical */
+    align-items: center;
+
+}
+
+.checkbox-group>div {
+    display: flex;
+
+    align-items: center;
+    gap: 6px;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.checkbox-group label {
+    margin: 8px;
+    font-weight: 500;
+    width: 100px;
+    background-color: #ff6b6b;
+}
+
+.checkbox-group input {
+    margin-right: 6px;
+
+}
+
+.labelForm {
+    width: 300px;
+
+}
+
+/* --- SUBMIT BUTTON --- */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #4A90E2;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: #357ABD;
+}
+
+/*-----------*/
+/*----FOOTER-----*/
+footer {
+    width: 100%;
+    height: 100px;
+    background-color: rgb(66, 64, 64);
+    margin-top: 32px;
 }
