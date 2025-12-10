@@ -2,37 +2,54 @@ name: CI/CD
 
 on:
   push:
-    branches: ["main"] 
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
 jobs:
   build-and-test:
-    name: Build & Test
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version: "18"
+          php-version: '8.2'
+          extensions: intl, pdo, pdo_mysql
+          coverage: none
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Composer dependencies
+        run: composer install --no-interaction
 
-      - name: Run tests
-        run: npm test
+      - name: Run Symfony migrations (si nécessaire)
+        run: php bin/console doctrine:migrations:migrate --no-interaction || true
 
-      - name: Build project
-        run: npm run build
+      - name: Run PHPUnit tests
+        run: |
+          php ./vendor/bin/phpunit --testdox
 
   deploy:
     name: Deploy to Railway
     needs: build-and-test
     runs-on: ubuntu-latest
+
     if: github.ref == 'refs/heads/main'
 
     steps:
