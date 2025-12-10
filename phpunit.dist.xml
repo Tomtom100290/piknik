@@ -16,7 +16,7 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <!-- Configuration de la base de données de test -->
-        <env name="DATABASE_URL" value="mysql://root:root@127.0.0.1:3306/piknik_test?serverVersion=8.0" />
+        <env name="DATABASE_URL" value="mysql://root:root@127.0.0.1:3306/piknik?serverVersion=8.0" />
     </php>
 
     <testsuites>
