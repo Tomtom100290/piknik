@@ -38,12 +38,6 @@ jobs:
           extensions: pdo_mysql, zip, gd, mbstring, intl
           tools: composer:v2
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-
-      
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -76,9 +70,7 @@ jobs:
       - name: Run PHPUnit tests
         run: php bin/phpunit
 
-      - name: Build frontend
-        run: npm run build
-
+  
   deploy:
     name: Deploy to Railway
     needs: build-and-test
