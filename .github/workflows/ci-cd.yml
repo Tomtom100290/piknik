@@ -38,7 +38,6 @@ jobs:
           extensions: pdo_mysql, zip, gd, mbstring, intl
           tools: composer:v2
 
-
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
@@ -70,7 +69,6 @@ jobs:
       - name: Run PHPUnit tests
         run: php bin/phpunit
 
-  
   deploy:
     name: Deploy to Railway
     needs: build-and-test
