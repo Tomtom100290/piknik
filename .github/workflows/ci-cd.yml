@@ -69,7 +69,7 @@ jobs:
       - name: Run PHPUnit tests
         run: php bin/phpunit
 
-    deploy:
+  deploy:
     name: Deploy to Railway
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -87,4 +87,3 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --environment production --detach
-      
