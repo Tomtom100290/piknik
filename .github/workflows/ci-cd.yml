@@ -70,16 +70,20 @@ jobs:
         run: php bin/phpunit
 
   deploy:
-    - name: Deploy to Railway
-      run: |
-          railway login --browserless
-      env:
+    name: Deploy to Railway
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      
-    - name: Link and Deploy
-      run: |
-          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-          railway service ${{ secrets.RAILWAY_SERVICE_ID }}
-          railway up --detach
-      env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --environment production
+          
