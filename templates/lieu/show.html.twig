@@ -80,9 +80,7 @@
 					<h3>Images</h3>
 					<div class="row">
 						{% for image in lieu.images %}
-							<div class="col-md-4 mb-3">
-								<img src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="Image de {{ lieu.nom }}" class="img-fluid rounded">
-							</div>
+							<div class="ImgL" style="background-image: url('{{ vich_uploader_asset(image, 'imageFile') }}');"></div>
 						{% endfor %}
 					</div>
 				</div>
@@ -105,9 +103,9 @@
 
 			{% if app.user %}
 				{# Le formulaire d'ajout d'avis n'est pas instancié côté contrôleur pour le moment.
-																												   Si vous souhaitez réactiver la saisie d'avis, créer un FormType (par ex. AvisType)
-																												   et le passer au template sous le nom `formAvis` (FormView), puis utiliser
-																												   `form_start(formAvis)` / `form_row(formAvis.field)` ici. #}
+																																								   Si vous souhaitez réactiver la saisie d'avis, créer un FormType (par ex. AvisType)
+																																								   et le passer au template sous le nom `formAvis` (FormView), puis utiliser
+																																								   `form_start(formAvis)` / `form_row(formAvis.field)` ici. #}
 				<p>La saisie d'un nouvel avis n'est pas disponible pour l'instant.</p>
 			{% else %}
 				<p>
