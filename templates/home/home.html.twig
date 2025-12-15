@@ -8,22 +8,542 @@
 	<div
 		class="BlocHome">
 		<!--HEADER-->
+
 		<div class="HeaderHome">
 			<h1>PikNik</h1>
 		</div>
-		<!--LIEUX POPULAIRES-->
-		<div class="LieuPopulaire">
-			<h2>Les mieux notés</h2>
-		</div>
-		<!--FILTRES-->
-		<div class="Filtres"></div>
-		<!--TOUS LES LIEUX-->
-		<div class="LieuTous">
-			<h2>Lieux de pique-nique</h2>
-		</div>
-		<!--NOUVEAUX LIEUX-->
-		<div class="LieuNvx">
-			<h2>Récemment ajoutés</h2>
+		<div class="mainHome">
+			<div
+				class="blocLateralHome">
+				<!--LIEUX POPULAIRES-->
+				<div class="LieuPopulaire">
+					<style>
+						.favoris-section {
+							background: white;
+							border-radius: 15px;
+							padding: 1.5rem;
+							box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+							margin: 8px;
+
+							height: 100vh; /* hauteur de l'écran */
+							overflow-y: auto; /* scroll vertical */
+							overflow-x: hidden;
+						}
+
+						.favoris-section h2 {
+							font-size: 1.8rem;
+							color: #333;
+							margin: 8px auto;
+							text-align: center;
+						}
+
+						/* Container avec scroll */
+						.favoris-container {
+							position: relative;
+							max-height: 600px;
+							overflow: hidden;
+							transition: max-height 0.5s ease;
+							height: 100vh; /* hauteur de l'écran */
+							overflow-y: auto; /* scroll vertical */
+							overflow-x: hidden;
+						}
+
+						.favoris-container.expanded {
+							max-height: none;
+						}
+
+						/* Liste des cards */
+						.favoris-list {
+							display: flex;
+							flex-direction: column;
+							gap: 1rem;
+							list-style: none;
+							padding: 0;
+							margin: 0;
+							/* hauteur de l'écran */
+							overflow-y: auto; /* scroll vertical */
+							overflow-x: hidden;
+						}
+
+						/* Card favorite */
+						.favorite-card {
+							background: white;
+							border-radius: 12px;
+							overflow: hidden;
+							box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+							transition: transform 0.3s, box-shadow 0.3s;
+							cursor: pointer;
+						}
+
+						.favorite-card:hover {
+							transform: translateY(-3px);
+							box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+						}
+
+						/* Images slider */
+						.fav-images-container {
+							position: relative;
+							width: 100%;
+							height: 200px;
+							overflow: hidden;
+							background: #f0f0f0;
+						}
+
+						.fav-images-slider {
+							display: flex;
+							height: 100%;
+							transition: transform 0.5s ease;
+						}
+
+						.fav-image {
+							min-width: 100%;
+							height: 100%;
+							object-fit: cover;
+						}
+
+						/* Navigation images */
+						.fav-image-nav {
+							position: absolute;
+							bottom: 10px;
+							left: 50%;
+							transform: translateX(-50%);
+							display: flex;
+							gap: 0.5rem;
+							z-index: 10;
+						}
+
+						.fav-image-dot {
+							width: 8px;
+							height: 8px;
+							border-radius: 50%;
+							background: rgba(255, 255, 255, 0.5);
+							cursor: pointer;
+							transition: all 0.3s;
+						}
+
+						.fav-image-dot.active {
+							background: white;
+							width: 24px;
+							border-radius: 4px;
+						}
+
+						/* Badge compteur */
+						.fav-images-counter {
+							position: absolute;
+							top: 10px;
+							right: 10px;
+							background: rgba(0, 0, 0, 0.6);
+							color: white;
+							padding: 0.4rem 0.8rem;
+							border-radius: 20px;
+							font-size: 0.85rem;
+							font-weight: 600;
+							z-index: 10;
+						}
+
+						/* Contenu de la card */
+						.fav-card-content {
+							padding: 1rem;
+							margin-bottom: 8px;
+							border: 1px solid #aca8a8ff;
+						}
+
+						.fav-card-title {
+							font-size: 1.2rem;
+							font-weight: 700;
+							color: #333;
+							margin-bottom: 0.5rem;
+						}
+
+						.fav-card-description {
+							color: #666;
+							font-size: 0.9rem;
+							line-height: 1.5;
+							margin-bottom: 0.8rem;
+							display: -webkit-box;
+							-webkit-line-clamp: 2;
+							-webkit-box-orient: vertical;
+							overflow: hidden;
+						}
+
+						/* Infos supplémentaires */
+						.fav-card-info {
+							display: flex;
+							flex-wrap: wrap;
+							gap: 0.8rem;
+							margin-top: 0.8rem;
+						}
+
+						.fav-info-item {
+							display: flex;
+							align-items: center;
+							gap: 0.4rem;
+							font-size: 0.85rem;
+							color: #666;
+						}
+
+						.fav-info-icon {
+							font-size: 1rem;
+						}
+
+						.fav-category-badge {
+							background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+							color: white;
+							padding: 0.4rem 0.8rem;
+							border-radius: 15px;
+							font-size: 0.8rem;
+							font-weight: 600;
+						}
+
+						/* Gradient fade */
+						.fade-overlay {
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							right: 0;
+							height: 100px;
+							background: linear-gradient(to bottom, transparent, white);
+							pointer-events: none;
+							transition: opacity 0.3s;
+						}
+
+						.fade-overlay.hidden {
+							opacity: 0;
+						}
+
+						/* Bouton voir plus */
+						.show-more-btn {
+							width: 100%;
+							margin-top: 1rem;
+							padding: 1rem;
+							background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+							color: white;
+							border: none;
+							border-radius: 10px;
+							font-size: 1rem;
+							font-weight: 600;
+							cursor: pointer;
+							transition: all 0.3s;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							gap: 0.5rem;
+						}
+
+						.show-more-btn:hover {
+							transform: translateY(-2px);
+							box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+						}
+
+						.show-more-btn.hidden {
+							display: none;
+						}
+
+						.arrow {
+							transition: transform 0.3s;
+							font-size: 1.2rem;
+						}
+
+						.show-more-btn.expanded .arrow {
+							transform: rotate(180deg);
+						}
+
+						/* Message vide */
+						.empty-favoris {
+							text-align: center;
+							padding: 2rem;
+							color: #999;
+							font-style: italic;
+						}
+
+						/* Animation */
+						@keyframes fadeIn {
+							from {
+								opacity: 0;
+								transform: translateY(20px);
+							}
+							to {
+								opacity: 1;
+								transform: translateY(0);
+							}
+						}
+
+						.favorite-card {
+							animation: fadeIn 0.5s ease;
+
+						}
+					</style>
+
+					<div class="favoris-section">
+						<h2>Mes favoris</h2>
+
+						{% if favoris is empty %}
+							<div class="empty-favoris">
+								<p>Vous n'avez pas encore de lieux favoris.</p>
+							</div>
+						{% else %}
+							<div class="favoris-container" id="favorisContainer">
+								<ul class="favoris-list">
+									{% for fav in favoris %}
+										<li
+											class="favorite-card">
+											<!-- Images -->
+											<div class="fav-images-container">
+												{% if fav.fklieu.images|length > 0 %}
+													{% if fav.fklieu.images|length > 1 %}
+														<div class="fav-images-counter">📷
+															{{ fav.fklieu.images|length }}</div>
+													{% endif %}
+
+													<div class="fav-images-slider" data-fav-slider-id="fav-slider-{{ loop.index }}">
+														{% for image in fav.fklieu.images %}
+															<img src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="{{ fav.fklieu.nom }}" class="fav-image">
+														{% endfor %}
+													</div>
+
+													{% if fav.fklieu.images|length > 1 %}
+														<div class="fav-image-nav" data-fav-nav-id="fav-nav-{{ loop.index }}">
+															{% for image in fav.fklieu.images %}
+																<span class="fav-image-dot {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+															{% endfor %}
+														</div>
+													{% endif %}
+												{% else %}
+													<img src="https://via.placeholder.com/400x200?text=Pas+d%27image" alt="Pas d'image" class="fav-image">
+												{% endif %}
+											</div>
+
+											<!-- Contenu -->
+											<div class="fav-card-content">
+												<div class="fav-card-title">{{ fav.fklieu.nom }}</div>
+
+												{% if fav.fklieu.description %}
+													<div class="fav-card-description">{{ fav.fklieu.description }}</div>
+												{% endif %}
+
+												<div class="fav-card-info">
+													{% if fav.fklieu.arrondissement %}
+														<div class="fav-info-item">
+															<span class="fav-info-icon">📍</span>
+															<span>{{ fav.fklieu.arrondissement }}</span>
+														</div>
+													{% endif %}
+
+													{% if fav.fklieu.categoriefk %}
+														<span class="fav-category-badge">{{ fav.fklieu.categoriefk }}</span>
+													{% endif %}
+												</div>
+											</div>
+										</li>
+									{% endfor %}
+								</ul>
+
+								<div class="fade-overlay" id="fadeOverlay"></div>
+							</div>
+
+							{% if favoris|length > 3 %}
+								<button class="show-more-btn" id="showMoreBtn">
+									<span id="btnText">Voir plus</span>
+									<span class="arrow">↓</span>
+								</button>
+							{% endif %}
+						{% endif %}
+					</div>
+
+					<script>
+						document.addEventListener('DOMContentLoaded', function () { // Navigation entre les images
+const navContainers = document.querySelectorAll('[data-fav-nav-id]');
+
+navContainers.forEach(nav => {
+const navId = nav.getAttribute('data-fav-nav-id');
+const sliderId = 'fav-slider-' + navId.split('-')[2];
+const slider = document.querySelector (`[data-fav-slider-id="${sliderId}"]`);
+const dots = nav.querySelectorAll('.fav-image-dot');
+
+dots.forEach(dot => {
+dot.addEventListener('click', function (e) {
+e.stopPropagation();
+const index = parseInt(this.getAttribute('data-index'));
+
+// Déplacer le slider
+slider.style.transform = `translateX(-${
+index * 100
+}%)`;
+
+// Mettre à jour les dots
+dots.forEach(d => d.classList.remove('active'));
+this.classList.add('active');
+});
+});
+});
+
+// Bouton "Voir plus"
+const favorisContainer = document.getElementById('favorisContainer');
+const showMoreBtn = document.getElementById('showMoreBtn');
+const fadeOverlay = document.getElementById('fadeOverlay');
+const btnText = document.getElementById('btnText');
+
+if (showMoreBtn) {
+let isExpanded = false;
+
+showMoreBtn.addEventListener('click', function () {
+isExpanded = ! isExpanded;
+
+if (isExpanded) {
+favorisContainer.classList.add('expanded');
+fadeOverlay.classList.add('hidden');
+btnText.textContent = 'Voir moins';
+showMoreBtn.classList.add('expanded');
+} else {
+favorisContainer.classList.remove('expanded');
+fadeOverlay.classList.remove('hidden');
+btnText.textContent = 'Voir plus';
+showMoreBtn.classList.remove('expanded');
+
+// Scroll vers le haut
+favorisContainer.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+});
+}
+});
+					</script>
+				</div>
+			</div>
+
+
+			<div
+				class="bloc2Centre">
+				<!--TOUS LES LIEUX-->
+				<div class="LieuTous">
+					<h2>Lieux de pique-nique</h2>
+					<div class="BlocInsta w-full  mx-auto">
+						<div
+							id="default-carousel" class="relative w-full" data-carousel="slide" data-carousel-interval=" 8000">
+							<!-- Carousel wrapper -->
+							<div
+								class="relative h-64 overflow-hidden rounded-lg">
+								<!-- Slide 1 - Images 1-4 -->
+								<div class="hidden duration-700 ease-in-out " data-carousel-item data-carousel-interval=" 8000">
+									<div class="grid grid-cols-4 gap-4 h-full p-4">
+
+
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+
+								<!-- Slide 2 - Images 5-8 -->
+								<div class="hidden duration-700 ease-in-out" data-carousel-item data-carousel-interval=" 8000">
+									<div class="grid grid-cols-4 gap-4 h-full p-4">
+
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+										<a href="https://www.notion.so/SQL-150d6a229483809c8630f9ce419e0825" class="LiensResaux">
+											<div class="relative h-full">
+												<div class="EffHov"></div>
+												<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400" class="w-full h-full object-cover rounded-lg" alt="Image 1">
+												<i class="fa-brands fa-instagram Myicon"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+
+								<!-- Slider indicators -->
+								<div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+									<button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+									<button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+									<button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+								</div>
+
+								<!-- Slider controls -->
+								<button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+									<span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+										<svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 6 10">
+											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+										</svg>
+										<span class="sr-only">Précédent</span>
+									</span>
+								</button>
+								<button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+									<span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+										<svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 6 10">
+											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+										</svg>
+										<span class="sr-only">Suivant</span>
+									</span>
+								</button>
+							</div>
+						</div>
+
+					</div>
+					<div>
+						<a href="{{ path('filtre_lieux') }}">Voir tout les lieux</a>
+					</div>
+				</div>
+				<!--NOUVEAUX LIEUX-->
+				<div class="LieuNvx">
+					<h2>Récemment ajoutés</h2>
+					<div class="cardA">
+						{% for lieu in lieus|slice(0, 4) %}
+							<div class="cardNew">
+								<img src="https://via.placeholder.com/400x200?text=Image+Lieu" alt="Image Lieu" class="cardNewImg">
+								<div class="cardNewContent">
+									<h3 class="cardNewTitle">{{ lieu.nom }}</h3>
+									<p class="cardNewDesc">{{ lieu.description|length > 100 ? lieu.description|slice(0, 100) ~ '...' : lieu.description }}</p>
+								</div>
+							</div>
+						{% endfor %}
+
+
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
-{% endblock %}
+</div><!--SCRIPT Tailwind--><script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>{% endblock %}

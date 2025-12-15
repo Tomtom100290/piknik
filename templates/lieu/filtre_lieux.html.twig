@@ -3,8 +3,191 @@
 {% block title %}Filtrer les lieux
 {% endblock %}
 
+
 {% block body %}
-	<h1>🔎 Filtrer les lieux par équipement</h1>
+	<style>
+		.results-section {
+			margin-top: 3rem;
+		}
+
+		.results-section h2 {
+			font-size: 2rem;
+			margin-bottom: 2rem;
+			color: #333;
+			text-align: center;
+		}
+
+		/* Message vide */
+		.empty-message {
+			background: white;
+			border-radius: 15px;
+			padding: 3rem;
+			text-align: center;
+			color: #666;
+			font-size: 1.2rem;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Grille de cards */
+		.lieux-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+			gap: 2rem;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		/* Card individuelle */
+		.lieu-card {
+			background: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+			transition: transform 0.3s, box-shadow 0.3s;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.lieu-card:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+		}
+
+		/* Images slider */
+		.card-images-container {
+			position: relative;
+			width: 100%;
+			height: 250px;
+			overflow: hidden;
+		}
+
+		.card-images-slider {
+			display: flex;
+			height: 100%;
+			transition: transform 0.5s ease;
+		}
+
+		.lieu-card .imgShow {
+			min-width: 100%;
+			height: 100%;
+			background-size: cover;
+			background-position: center;
+			background-color: #f0f0f0;
+		}
+
+		/* Navigation images (si plusieurs) */
+		.image-nav {
+			position: absolute;
+			bottom: 10px;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 0.5rem;
+			z-index: 10;
+		}
+
+		.image-dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.5);
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.image-dot.active {
+			background: white;
+			width: 24px;
+			border-radius: 4px;
+		}
+
+		/* Contenu de la card */
+		.card-content {
+			padding: 1.5rem;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card-title {
+			font-size: 1.5rem;
+			color: #333;
+			margin-bottom: 1rem;
+			font-weight: 700;
+		}
+
+		.card-description {
+			color: #666;
+			line-height: 1.6;
+			margin-bottom: 1.5rem;
+			flex: 1;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		/* Section équipements */
+		.equipements-section {
+			border-top: 2px solid #f0f0f0;
+			padding-top: 1rem;
+		}
+
+		.equipements-title {
+			font-weight: 600;
+			color: #667eea;
+			margin-bottom: 0.8rem;
+			font-size: 0.9rem;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.equipements-list {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			padding: 0;
+			margin: 0;
+		}
+
+		.equipements-list li {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 0.5rem 1rem;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			font-weight: 500;
+		}
+
+		/* Badge compteur d'images */
+		.images-counter {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background: rgba(0, 0, 0, 0.6);
+			color: white;
+			padding: 0.4rem 0.8rem;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			font-weight: 600;
+			z-index: 10;
+		}
+
+		/* Responsive */
+		@media(max-width: 768px) {
+			.lieux-grid {
+				grid-template-columns: 1fr;
+				gap: 1.5rem;
+			}
+
+			.card-images-container {
+				height: 200px;
+			}
+		}
+	</style>
+	<h1>Filtrer les lieux par équipement</h1>
 
 	{{ form_start(form) }}
 	{{ form_widget(form) }}
@@ -13,29 +196,92 @@
 
 	<hr>
 
-	<h2>Résultats :</h2>
+	<div class="results-section">
+		<h2>Résultats :</h2>
 
-	{% if lieux is empty %}
-		<p>Aucun lieu ne correspond à votre recherche.</p>
-	{% else %}
-		<ul>
-			{% for lieu in lieux %}
-				<li>
-					{% for image in lieu.images %}
-						<div class="imgShow" style="background-image: url('{{ vich_uploader_asset(image, 'imageFile') }}');"></div>
-					{% endfor %}
+		{% if lieux is empty %}
+			<div class="empty-message">
+				<p>🔍 Aucun lieu ne correspond à votre recherche.</p>
+			</div>
+		{% else %}
+			<ul class="lieux-grid">
+				{% for lieu in lieux %}
+					<li
+						class="lieu-card">
+						<!-- Images -->
+						<div class="card-images-container">
+							{% if lieu.images|length > 0 %}
+								{% if lieu.images|length > 1 %}
+									<div class="images-counter">📷
+										{{ lieu.images|length }}</div>
+								{% endif %}
 
-					<strong>{{ lieu.nom }}</strong><br>
-					{{ lieu.description }}<br>
+								<div class="card-images-slider" data-slider-id="slider-{{ loop.index }}">
+									{% for image in lieu.images %}
+										<div class="imgShow" style="background-image: url('{{ vich_uploader_asset(image, 'imageFile') }}');"></div>
+									{% endfor %}
+								</div>
 
-					<em>Équipements :</em>
-					<ul>
-						{% for eq in lieu.fkEquipement %}
-							<li>{{ eq.nom }}</li>
-						{% endfor %}
-					</ul>
-				</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
+								{% if lieu.images|length > 1 %}
+									<div class="image-nav" data-nav-id="nav-{{ loop.index }}">
+										{% for image in lieu.images %}
+											<span class="image-dot {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+										{% endfor %}
+									</div>
+								{% endif %}
+							{% else %}
+								<div class="imgShow" style="background-image: url('https://via.placeholder.com/400x250?text=Pas+d%27image');"></div>
+							{% endif %}
+						</div>
+
+						<!-- Contenu -->
+						<div class="card-content">
+							<div class="card-title">{{ lieu.nom }}</div>
+							<div class="card-description">{{ lieu.description }}</div>
+
+							<!-- Équipements -->
+							{% if lieu.fkEquipement|length > 0 %}
+								<div class="equipements-section">
+									<div class="equipements-title">Équipements disponibles</div>
+									<ul class="equipements-list">
+										{% for eq in lieu.fkEquipement %}
+											<li>{{ eq.nom }}</li>
+										{% endfor %}
+									</ul>
+								</div>
+							{% endif %}
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+	<script>
+		// Navigation entre les images d'une card
+document.addEventListener('DOMContentLoaded', function () {
+const navContainers = document.querySelectorAll('[data-nav-id]');
+
+navContainers.forEach(nav => {
+const navId = nav.getAttribute('data-nav-id');
+const sliderId = 'slider-' + navId.split('-')[1];
+const slider = document.querySelector (`[data-slider-id="${sliderId}"]`);
+const dots = nav.querySelectorAll('.image-dot');
+
+dots.forEach(dot => {
+dot.addEventListener('click', function () {
+const index = parseInt(this.getAttribute('data-index'));
+
+// Déplacer le slider
+slider.style.transform = `translateX(-${
+index * 100
+}%)`;
+
+// Mettre à jour les dots
+dots.forEach(d => d.classList.remove('active'));
+this.classList.add('active');
+});
+});
+});
+});
+	</script>
 {% endblock %}

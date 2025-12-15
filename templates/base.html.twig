@@ -7,7 +7,7 @@
 			{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %}
-
+		<script src="https://cdn.tailwindcss.com"></script>
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -17,5 +17,76 @@
 	<body>
 		{% block body %}{% endblock %}
 		<footer></footer>
+		<!--SCRIPT -->
+		<!-- Script de réinitialisation du carousel -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () { // Réinitialiser le carousel à chaque chargement de page
+const carouselElement = document.getElementById('controls-carousel');
+
+if (carouselElement) { // Forcer l'affichage de l'item actif
+const items = carouselElement.querySelectorAll('[data-carousel-item]');
+items.forEach((item) => {
+if (item.getAttribute('data-carousel-item') === 'active') {
+item.classList.remove('hidden');
+} else {
+item.classList.add('hidden');
+}
+});
+
+// Réinitialiser Flowbite carousel si disponible
+if (typeof Carousel !== 'undefined') {
+const itemsArray = Array.from(items).map((item, index) => ({position: index, el: item}));
+
+const options = {
+defaultPosition: Array.from(items).findIndex(item => item.getAttribute('data-carousel-item') === 'active'),
+interval: 10000,
+indicators: {
+items: []
+}
+};
+
+const carousel = new Carousel(carouselElement, itemsArray, options);
+carousel.cycle();
+}
+}
+});
+
+// Masquer les boutons de review (si widget externe)
+let attempts = 0;
+const maxAttempts = 20;
+
+const hideReviewButton = setInterval(function () {
+const buttons = document.querySelectorAll('button');
+let found = false;
+
+buttons.forEach(button => {
+if (button.textContent.includes('Leave a review') || button.textContent.includes('Laisser un avis')) {
+button.style.display = 'none';
+found = true;
+}
+});
+
+attempts++;
+if (found || attempts >= maxAttempts) {
+clearInterval(hideReviewButton);
+}
+}, 200);
+
+// Observer pour les éléments ajoutés dynamiquement
+const observer = new MutationObserver(function (mutations) {
+const buttons = document.querySelectorAll('button');
+buttons.forEach(button => {
+if (button.textContent.includes('Leave a review') || button.textContent.includes('Laisser un avis')) {
+button.style.display = 'none';
+}
+});
+});
+
+observer.observe(document.body, {
+childList: true,
+subtree: true,
+attributes: true
+});
+		</script>
 	</body>
 </html>
